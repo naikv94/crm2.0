@@ -150,5 +150,3 @@ EMAIL_HOST_PASSWORD = '8655115443'
 
 # This will print email in Console.
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
