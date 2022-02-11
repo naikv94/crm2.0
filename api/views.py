@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm, CompanyForm, ContactForm, ProfileForm, UserForm
-from django.contrib.auth import authenticate, login, logout
+from .forms import RegisterForm, CompanyForm, ContactForm, ProfileForm, UserForm
 from django.contrib import messages
 from .models import Contact, Company, Profile
 from django.contrib.auth.decorators import login_required
@@ -14,7 +13,6 @@ def home(request):
 
 @login_required(login_url='accounts/login/')
 def dashboard(request):
-    print('user-id', request.user.id)
     companies = Company.objects.filter(user_id = request.user.id).count()
     contacts = Contact.objects.filter(user_id = request.user.id).count()
     context = {
@@ -23,20 +21,7 @@ def dashboard(request):
     }
     return render(request,'common/dashboard.html', context)
 
-##### Authentication Views ######
-def loginView(request):
-    if request.method == 'POST':
-        user = authenticate(username=request.POST['username'], password=request.POST['password'])
-        if user:
-            print('inside login if')
-            login(request,user)
-            messages.success(request,'Login Sucessfully')
-            return redirect('dashboard')
-        messages.success(request,'Check for Username or Password')
-        return redirect('login')
-
-    login_form = LoginForm()
-    return render(request,'common/login.html',{'form':login_form})
+##### Signup Views ######
 
 def registerView(request):
     if request.method == 'POST':
@@ -50,12 +35,6 @@ def registerView(request):
     register_form = RegisterForm()
     return render(request,'common/register.html',{'form':register_form})
 
-def logoutView(request):
-    logout(request)
-    # messages.success(request,'Logout Sucessfully')
-    return render(request,'common/home.html')
-
-##### End of Authentication Views ######
 
 ##### Dashboard Views #####
 @login_required(login_url='accounts/login/')
@@ -86,7 +65,7 @@ def companyView(request):
             else:
                 context['form'] = company_form
                 return render(request,'common/companies.html', context)
-        print('context', context)
+        # print('context', context)
         return render(request,'common/companies.html', context)
     return render(request,'common/companies.html', {})
     
