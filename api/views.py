@@ -65,7 +65,6 @@ def companyView(request):
             else:
                 context['form'] = company_form
                 return render(request,'common/companies.html', context)
-        # print('context', context)
         return render(request,'common/companies.html', context)
     return render(request,'common/companies.html', {})
     
