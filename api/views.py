@@ -141,6 +141,11 @@ def companyUpdateView(request, id):
                 company_form.save()
                 messages.success(request, 'Data updated!!')
                 return redirect('companies')
+            else:
+                context = {
+                    'form' : company_form
+                }
+                return render(request, 'common/companyUpdate.html', context)
     instance = Company.objects.get(id = id)
     company_form = CompanyForm(instance=instance)
     context = {
@@ -170,6 +175,11 @@ def contactUpdateView(request, id):
                 contact_form.save()
                 messages.success(request, 'Data updated!!')
                 return redirect('contacts')
+            else:
+                context = {
+                    'form' : contact_form
+                }
+                return render(request, 'common/contactUpdate.html', context)
     instance = Contact.objects.get(id = id)
     contact_form = ContactForm(instance=instance)  #Prepopulating existing data
     context = {
