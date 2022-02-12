@@ -61,8 +61,9 @@ def companyView(request):
                 print('cleaned data',company_form.cleaned_data)
                 company_form.save()
                 messages.success(request, 'Company data added!!')
-                return render(request,'common/companies.html', context)
+                return redirect('companies')
             else:
+                messages.error(request, 'Error! Check form data')
                 context['form'] = company_form
                 return render(request,'common/companies.html', context)
         return render(request,'common/companies.html', context)
@@ -86,12 +87,14 @@ def contactView(request):
         context = paginationView(request, contact_data, contact_form)
 
         if request.method == 'POST':
-            contact_form = ContactForm(request.POST)
+            user = Contact(user_id = user_id)
+            contact_form = ContactForm(request.POST, instance=user)
             if contact_form.is_valid():
                 contact_form.save()
                 messages.success(request, 'Contact added!!')
-                return render(request,'common/contacts.html', context)
+                return redirect('contacts')
             else :
+                messages.error(request, 'Error! Check form data')
                 context['form'] = contact_form
                 return render(request,'common/contacts.html', context)
         return render(request,'common/contacts.html', context)
@@ -168,6 +171,7 @@ def contactUpdateView(request, id):
 ############################################################
 
 def profile(request):
+    print('photo', request.user.profile.profile_image)
     context = {
         'user' : request.user,
     }
@@ -178,6 +182,7 @@ def profileUpdate(request):
     user_form = UserForm(instance=instance)
     instance = Profile.objects.get(user = request.user)
     profile_form = ProfileForm(instance=instance)
+    # print('files',request.FILES)
     context = {
         'user_form' : user_form,
         'profile_form' : profile_form
@@ -187,6 +192,7 @@ def profileUpdate(request):
         instance = User.objects.get(id = request.user.id)
         user_form = UserForm(request.POST, instance=instance)
         instance = Profile.objects.get(user = request.user)
+        instance.profile_image = request.FILES['profile_image']   # Storing image files into instance
         profile_form = ProfileForm(request.POST, instance=instance)
         if profile_form.is_valid() and user_form.is_valid():
             user_form.save()
